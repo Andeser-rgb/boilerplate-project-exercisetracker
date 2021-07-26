@@ -58,8 +58,8 @@ app.post('/api/users/:_id/exercises', (req, res) => {
       personFound.date = req.body.date ? new Date(req.body.date).toDateString() : currentDate;
       personFound.save((err, data) => {if(err) console.log(err);});
       const personCopy = Object.assign({}, personFound);
-      personCopy.__v = undefined;
-      res.send(personCopy);
+      personCopy._doc.__v = undefined;
+      res.send(personCopy._doc);
       console.log(personCopy);
     }
   });
