@@ -22,7 +22,7 @@ const personSchema = new mongoose.Schema({
   description: String,
   duration: Number,
   date: String,
-  log: [{}]
+  log: Array
 });
 
 const Person = new mongoose.model("Person", personSchema);
@@ -61,12 +61,13 @@ app.post('/api/users/:_id/exercises', (req, res) => {
           duration: req.body.duration,
           date: req.body.date ? new Date(req.body.date).toDateString() : currentDate
         };
+        console.log(newProperties);
         personFound = Object.assign(personFound, newProperties);
         personFound.log.push(newProperties);
+        console.log(personFound.log);
         personFound.save((err, data) => {if(err) console.log(err);});
-        const newObject = Object.assign({}, personFound)._doc;
-        newObject.__v = undefined;
-        newObject.log = undefined;
+        const newObject = {...personFound._doc};
+        newObject.__v = newObject.log = undefined;
         res.send(newObject);
       }
     });
@@ -80,12 +81,14 @@ app.get('/api/users/:_id/logs', (req, res) => {
       if(err) console.log(err);
       if(!personFound) res.send("No user found with this _id");
       else {
+        console.log(personFound);
         const newLogs = {
           "_id": id,
           "username": personFound.username,
           "count": personFound.log.length,
           "log": [...personFound.log]
         };
+        console.log(newLogs);
         res.send(newLogs);
       }
     });
