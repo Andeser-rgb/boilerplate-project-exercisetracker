@@ -61,10 +61,8 @@ app.post('/api/users/:_id/exercises', (req, res) => {
           duration: req.body.duration,
           date: req.body.date ? new Date(req.body.date).toDateString() : currentDate
         };
-        console.log(newProperties);
         personFound = Object.assign(personFound, newProperties);
         personFound.log.push(newProperties);
-        console.log(personFound.log);
         personFound.save((err, data) => {if(err) console.log(err);});
         const newObject = {...personFound._doc};
         newObject.__v = newObject.log = undefined;
@@ -83,10 +81,8 @@ app.get('/api/users/:_id/logs', (req, res) => {
       else {
         const limit = req.query.limit < personFound.log.length ? req.query.limit : personFound.log.length;
         const dates = personFound.log.map(d => new Date(d.date));
-        console.log(dates);
         const to = req.query.to ? new Date(req.query.to) : new Date(Math.max(...dates));
         const from = req.query.from ? new Date(req.query.from) : new Date(Math.min(...dates));
-        console.log(to + " " + from);
         const newLogs = {
           "_id": id,
           "username": personFound.username,
@@ -95,7 +91,6 @@ app.get('/api/users/:_id/logs', (req, res) => {
             .filter(d => new Date(d.date) >= from && new Date(d.date) <= to)
             .slice(0, limit)
         };
-        console.log(newLogs);
         res.send(newLogs);
       }
     });
