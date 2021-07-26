@@ -65,7 +65,6 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         personFound.log.push(newProperties);
         personFound.save((err, data) => {if(err) console.log(err);});
         personFound.__v = undefined;
-        personFound.log = undefined;
         res.send(personFound);
       }
     });
@@ -73,7 +72,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
 app.get('/api/users/:_id/logs', (req, res) => {
   let id = req.params._id;
-  if(id === unedfined) res.send('not found');
+  if(id === undefined) res.send('not found');
   else
     Person.findById(id, (err, personFound) => {
       if(err) console.log(err);
