@@ -50,7 +50,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   const id = req.body[":_id"];
   Person.findById(id, (err, personFound) => {
     if(err) console.log(err);
-    if(!personFound) res.send("No user found with this _id");
+    if(!personFound || !req.body.description || !req.body.duration) res.send("No user found with this _id");
     else {
       const currentDate = new Date().toDateString();
       personFound.description = req.body.description;
