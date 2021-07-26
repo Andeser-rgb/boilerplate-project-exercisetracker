@@ -64,8 +64,10 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         personFound = Object.assign(personFound, newProperties);
         personFound.log.push(newProperties);
         personFound.save((err, data) => {if(err) console.log(err);});
-        personFound.__v = undefined;
-        res.send(personFound);
+        const newObject = Object.assign({}, personFound)._doc;
+        newObject.__v = undefined;
+        newObject.log = undefined;
+        res.send(newObject);
       }
     });
 });
