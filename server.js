@@ -59,7 +59,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         personFound.duration = req.body.duration;
         personFound.date = req.body.date ? new Date(req.body.date).toDateString() : currentDate;
         personFound.save((err, data) => {if(err) console.log(err);});
-        personFound__v = undefined;
+        personFound.__v = undefined;
         res.send(personFound);
       }
     });
