@@ -21,7 +21,7 @@ const personSchema = new mongoose.Schema({
   username: String,
   description: String,
   duration: Number,
-  date: Date
+  date: String
 });
 
 const Person = new mongoose.model("Person", personSchema);
@@ -54,7 +54,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     else {
       personFound.description = req.body.description;
       personFound.duration = req.body.duration;
-      personFound.date = req.body.date == undefined ? new Date() : new Date(req.body.date);
+      personFound.date = req.body.date == undefined ? new Date().toDateString() : new Date(req.body.date).toDateString();
       personFound.save((err, data) => {console.log(err);});
       res.send(personFound);
     }
