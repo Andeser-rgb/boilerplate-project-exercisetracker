@@ -47,25 +47,22 @@ app.get('/api/users', (req, res) => {
 });
 
 app.post('/api/users/:_id/exercises', (req, res) => {
-  let id = req.body[":_id"];
-  if(id === undefined) id = req.params._id;
+  let id = req.params._id;
   if(id === undefined) res.send("not found");
   else
-  Person.findById(id, (err, personFound) => {
-    if(err) console.log(err);
-    if(!personFound || !req.body.description || !req.body.duration) res.send("No user found with this _id");
-    else {
-      const currentDate = new Date().toDateString();
-      personFound.description = req.body.description;
-      personFound.duration = req.body.duration;
-      personFound.date = req.body.date ? new Date(req.body.date).toDateString() : currentDate;
-      personFound.save((err, data) => {if(err) console.log(err);});
-      const personCopy = Object.assign({}, personFound);
-      personCopy._doc.__v = undefined;
-      res.send(personCopy._doc);
-      console.log(personCopy);
-    }
-  });
+    Person.findById(id, (err, personFound) => {
+      if(err) console.log(err);
+      if(!personFound || !req.body.description || !req.body.duration) res.send("No user found with this _id");
+      else {
+        const currentDate = new Date().toDateString();
+        personFound.description = req.body.description;
+        personFound.duration = req.body.duration;
+        personFound.date = req.body.date ? new Date(req.body.date).toDateString() : currentDate;
+        personFound.save((err, data) => {if(err) console.log(err);});
+        personFound__v = undefined;
+        res.send(personFound);
+      }
+    });
 });
 
 
