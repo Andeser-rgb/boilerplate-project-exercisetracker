@@ -32,7 +32,7 @@ app.post('/api/users', (req, res) => {
     if(err) console.log(err);
     if(data.length <= 0){
       const newPerson = new Person({username: req.body.username});
-      newPerson.save((err, data) => {console.log(err)});
+      newPerson.save((err, data) => {if(err) console.log(err)});
       res.send(newPerson);
     }
     else res.send({username: data[0].username, _id: data[0]._id});
@@ -55,8 +55,11 @@ app.post('/api/users/:_id/exercises', (req, res) => {
       personFound.description = req.body.description;
       personFound.duration = req.body.duration;
       personFound.date = req.body.date == undefined ? new Date().toDateString() : new Date(req.body.date).toDateString();
-      personFound.save((err, data) => {console.log(err);});
-      res.send(personFound);
+      personFound.save((err, data) => {if(err) console.log(err);});
+      const personCopy = personFound;
+      personCopy.__v = undefined;
+      res.send(personCopy);
+      console.log(personCopy);
     }
   });
 });
