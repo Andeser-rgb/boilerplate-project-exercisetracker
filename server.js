@@ -21,7 +21,8 @@ const personSchema = new mongoose.Schema({
   username: String,
   description: String,
   duration: Number,
-  date: String
+  date: String,
+  log: [{}]
 });
 
 const Person = new mongoose.model("Person", personSchema);
@@ -55,12 +56,36 @@ app.post('/api/users/:_id/exercises', (req, res) => {
       if(!personFound || !req.body.description || !req.body.duration) res.send("No user found with this _id");
       else {
         const currentDate = new Date().toDateString();
-        personFound.description = req.body.description;
-        personFound.duration = req.body.duration;
-        personFound.date = req.body.date ? new Date(req.body.date).toDateString() : currentDate;
+        const newProperties = {
+          description: req.body.description,
+          duration: req.body.duration,
+          date: req.body.date ? new Date(req.body.date).toDateString() : currentDate
+        };
+        personFound = Object.assign(personFound, newProperties);
+        personFound.log.push(newProperties);
         personFound.save((err, data) => {if(err) console.log(err);});
         personFound.__v = undefined;
+        personFound.log = undefined;
         res.send(personFound);
+      }
+    });
+});
+
+app.get('/api/users/:_id/logs', (req, res) => {
+  let id = req.params._id;
+  if(id === unedfined) res.send('not found');
+  else
+    Person.findById(id, (err, personFound) => {
+      if(err) console.log(err);
+      if(!personFound) res.send("No user found with this _id");
+      else {
+        const newLogs = {
+          "_id": id,
+          "username": personFound.username,
+          "count": personFound.log.length,
+          "log": [...personFound.log]
+        };
+        res.send(newLogs);
       }
     });
 });
