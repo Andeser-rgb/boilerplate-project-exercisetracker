@@ -47,7 +47,10 @@ app.get('/api/users', (req, res) => {
 });
 
 app.post('/api/users/:_id/exercises', (req, res) => {
-  const id = req.body[":_id"];
+  let id = req.body[":_id"];
+  if(id === undefined) id = req.params._id;
+  if(id === undefined) res.send("not found");
+  else
   Person.findById(id, (err, personFound) => {
     if(err) console.log(err);
     if(!personFound || !req.body.description || !req.body.duration) res.send("No user found with this _id");
