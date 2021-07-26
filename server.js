@@ -31,7 +31,7 @@ app.post('/api/users', (req, res) => {
   const username = req.body.username;
   Person.find({username: username}, (err, data) => {
     if(err) console.log(err);
-    if(data.length <= 0){
+    else if(data.length <= 0){
       const newPerson = new Person({username: req.body.username});
       newPerson.save((err, data) => {if(err) console.log(err)});
       res.send(newPerson);
@@ -81,12 +81,19 @@ app.get('/api/users/:_id/logs', (req, res) => {
       if(err) console.log(err);
       if(!personFound) res.send("No user found with this _id");
       else {
-        console.log(personFound);
+        const limit = req.query.limit < personFound.log.length ? req.query.limit : personFound.log.length;
+        const dates = personFound.log.map(d => new Date(d.date));
+        console.log(dates);
+        const to = req.query.to ? new Date(req.query.to) : new Date(Math.max(...dates));
+        const from = req.query.from ? new Date(req.query.from) : new Date(Math.min(...dates));
+        console.log(to + " " + from);
         const newLogs = {
           "_id": id,
           "username": personFound.username,
-          "count": personFound.log.length,
+          "count": limit,
           "log": [...personFound.log]
+            .filter(d => new Date(d.date) >= from && new Date(d.date) <= to)
+            .slice(0, limit)
         };
         console.log(newLogs);
         res.send(newLogs);
