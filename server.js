@@ -46,6 +46,21 @@ app.get('/api/users', (req, res) => {
   });
 });
 
+app.post('/api/users/:_id/exercises', (req, res) => {
+  const id = req.body[":_id"];
+  Person.findById(id, (err, personFound) => {
+    if(err) console.log(err);
+    if(!personFound) res.send("No user found with this _id");
+    else {
+      personFound.description = req.body.description;
+      personFound.duration = req.body.duration;
+      personFound.date = req.body.date == undefined ? new Date() : new Date(req.body.date);
+      personFound.save((err, data) => {console.log(err);});
+      res.send(personFound);
+    }
+  });
+});
+
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
