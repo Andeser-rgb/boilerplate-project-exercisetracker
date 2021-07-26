@@ -52,9 +52,10 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     if(err) console.log(err);
     if(!personFound) res.send("No user found with this _id");
     else {
+      const currentDate = new Date().toDateString();
       personFound.description = req.body.description;
       personFound.duration = req.body.duration;
-      personFound.date = req.body.date == undefined ? new Date().toDateString() : new Date(req.body.date).toDateString();
+      personFound.date = req.body.date ? new Date(req.body.date).toDateString() : currentDate;
       personFound.save((err, data) => {if(err) console.log(err);});
       const personCopy = personFound;
       personCopy.__v = undefined;
