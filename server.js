@@ -29,17 +29,21 @@ const Person = new mongoose.model("Person", personSchema);
 app.post('/api/users', (req, res) => {
   const username = req.body.username;
   Person.find({username: username}, (err, data) => {
+    if(err) console.log(err);
     if(data.length <= 0){
       const newPerson = new Person({username: req.body.username});
       newPerson.save((err, data) => {console.log(err)});
       res.send(newPerson);
     }
-    else {
-      res.send({username: data[0].username, _id: data[0]._id});
-    }
-
+    else res.send({username: data[0].username, _id: data[0]._id});
   });
+});
 
+app.get('/api/users', (req, res) => {
+  Person.find().exec((err, data) => {
+    if(err) console.log(err);
+    if(data.length > 0) res.send(data);
+  });
 });
 
 
